@@ -730,3 +730,19 @@ if __name__ == "__main__":
     print(fen.sum(5))  # 16
     print(fen.sum(10)) # 37
     print(fen.sum(14)) # 48
+
+
+
+def is_prime(n):
+    if n <= 1:
+	return False
+    if n <= 3:
+	return True
+    if n % 2 == 0 or n % 3 == 0:
+	return False
+    i = 5
+    while i * i <= n:
+	if n % i == 0 or n % (i + 2) == 0:
+	    return False
+	i += 6
+    return True
