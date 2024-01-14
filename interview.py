@@ -203,38 +203,32 @@ def rabin_karp(pattern, text):
     return False 
 
 
-def KMP(pattern, text):
-    """Knuth-Morris-Pratt algorithm (1977) for string search
-    When a mismatch occurs, the pattern itself embodies sufficient info to
-    determine where the next match could begin, thus bypassing re-examination 
-    of previously matched characters
-    """
+ def KMP(pref, s):
+    m, n = len(pref), len(s)
+    lps = [0] * m
+    j = 0  # length of the previous longest prefix suffix
     
-    """building longest prefix-suffix (lps) array
-    lps[i] stores length of maximum proper prefix which is also a suffix in 
-    pattern[:i+1] (note lps[0] is always 0). A proper prefix is prefix not 
-    whole string. For example, proper prefixes of "ABC" include "", "A", "AB" 
-    but not "ABC". 
-    
-    For example, "aaab" results in an lps of [0,1,2,0]. 
-    """
-    lps = [0] #longest prefix-suffix array
-    k = 0
-    for i in range(1, len(pattern)):
-        while k and pattern[k] != pattern[i]: 
-            k = lps[k-1]
-        if pattern[k] == pattern[i]: k += 1
-        lps.append(k)
-    
-    """Given an lps array which indicates where to start a new match in the 
-    event of a mismatch, we continue searching from pattern[lps[j-1]]."""
-    k = 0
-    for i in range(len(text)): 
-        while k and pattern[k] != text[i]:
-            k = lps[k-1]
-        if pattern[k] == text[i]: k += 1
-        if k == m: return i - m + 1
-    return -1 
+    # Preprocessing the pattern
+    for i in range(1, m):
+	while j and pref[j] != pref[i]:
+	    j = lps[j - 1]
+	if pref[j] == pref[i]:
+	    j += 1
+	lps[i] = j
+
+    # Searching the pattern in the text
+    occurrences = []
+    j = 0
+    for i in range(n):
+	while j and pref[j] != s[i]:
+	    j = lps[j - 1]
+	if pref[j] == s[i]:
+	    j += 1
+	if j == m:
+	    occurrences.append(i - m + 1)
+	    j = lps[j - 1]
+    return occurrences
+        
     
 
 def dfs_recursive(node):
