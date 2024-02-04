@@ -732,6 +732,17 @@ if __name__ == "__main__":
     print(fen.sum(14)) # 48
 
 
+def z_function(s):
+    z, l, r, n = [0] * len(s), 0, 0, len(s)
+    for i in range(1, n):
+	if i < r:
+	    z[i] = min(r - i, z[i - l])
+	while i + z[i] < n and s[i + z[i]] == s[z[i]]:
+	    z[i] += 1
+	if i + z[i] > r:
+	    l, r = i, i + z[i]
+
+    return z
 
 def is_prime(n):
     if n <= 1:
