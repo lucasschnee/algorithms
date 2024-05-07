@@ -757,3 +757,30 @@ def is_prime(n):
 	    return False
 	i += 6
     return True
+
+class UnionFind:
+
+    def __init__(self, N):
+        self.count = N              
+        self.parent = [i for i in range(N)]
+        self.rank = [1] * N
+        
+        
+    def find(self, p):
+        if p != self.parent[p]:
+            self.parent[p] = self.find(self.parent[p]) 
+        return self.parent[p]
+
+    def union(self, p, q):
+        prt, qrt = self.find(p), self.find(q)
+        if prt == qrt: return False
+        if self.rank[prt] >= self.rank[qrt]: 
+            self.parent[qrt] = prt
+            self.rank[prt] += self.rank[qrt]
+        else:
+            self.parent[prt] = qrt
+            self.rank[qrt] += self.rank[prt]
+            
+        self.count -= 1 
+        return True 
+
