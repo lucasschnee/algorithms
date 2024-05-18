@@ -905,3 +905,25 @@ def merge(left, right):
     merged.extend(right[r:])
 
     return merged
+
+
+class MAX_BIT:
+    def __init__(self, N):
+        self.INF = 10 ** 20
+        self.stree = [-self.INF] * (N + 1)
+    
+    def update(self, i, x):
+        while i < len(self.stree):
+            self.stree[i] = max(self.stree[i], x)
+            i |= (i + 1)
+
+    def query_max(self, i):
+        s = -self.INF
+
+        while i >= 0:
+            s = max(s, self.stree[i])
+            i &= (i + 1)
+            i -= 1
+
+        return s
+
