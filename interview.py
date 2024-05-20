@@ -927,3 +927,19 @@ class MAX_BIT:
 
         return s
 
+
+# Floyd-Warshall
+INF = 10 ** 20
+e = [[INF] * N for _ in range(N)]
+
+for i in range(N):
+    e[i][i] = 0
+
+for u, v, w in edges:
+    e[u][v] = min(e[u][v], w)
+    e[v][u] = min(e[v][u], w)
+
+for k in range(N):
+	for i in range(N):
+	    for j in range(N):
+		e[i][j] = min(e[i][j], e[i][k] + e[k][j])
