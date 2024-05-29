@@ -943,3 +943,81 @@ for k in range(N):
 	for i in range(N):
 	    for j in range(N):
 		e[i][j] = min(e[i][j], e[i][k] + e[k][j])
+
+
+
+
+# Segment Tree
+MAX = 10 ** 6
+INF = 10 ** 20
+
+class SegmentTree:
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (4 * n)
+        self.lazy = [0] * (4 * n)
+
+    def _build(self, start, end, node):
+        if start == end:
+            self.tree[node] = MAX
+        else:
+            mid = (start + end) // 2
+            self._build(start, mid, 2 * node + 1)
+            self._build(mid + 1, end, 2 * node + 2)
+            self.tree[node] = max(self.tree[2 * node + 1], self.tree[2 * node + 2])
+
+    def _update_range(self, start, end, l, r, value, node):
+        if self.lazy[node] != 0:
+            self.tree[node] = self.lazy[node]
+            if start != end:
+                self.lazy[2 * node + 1] = self.lazy[node]
+                self.lazy[2 * node + 2] = self.lazy[node]
+            self.lazy[node] = 0
+
+        if start > end or start > r or end < l:
+            return
+
+        if start >= l and end <= r:
+            self.tree[node] = value
+            if start != end:
+                self.lazy[2 * node + 1] = value
+                self.lazy[2 * node + 2] = value
+            return
+
+        mid = (start + end) // 2
+        self._update_range(start, mid, l, r, value, 2 * node + 1)
+        self._update_range(mid + 1, end, l, r, value, 2 * node + 2)
+        self.tree[node] = max(self.tree[2 * node + 1], self.tree[2 * node + 2])
+
+    def build(self):
+        self._build(0, self.n - 1, 0)
+
+    def update_range(self, l, r, value):
+        self._update_range(0, self.n - 1, l, r, value, 0)
+
+    def _query_range(self, start, end, l, r, node):
+        if start > end or start > r or end < l:
+            return -INF
+
+        if self.lazy[node] != 0:
+            self.tree[node] = self.lazy[node]
+            if start != end:
+                self.lazy[2 * node + 1] = self.lazy[node]
+                self.lazy[2 * node + 2] = self.lazy[node]
+            self.lazy[node] = 0
+
+        if start >= l and end <= r:
+            return self.tree[node]
+
+        mid = (start + end) // 2
+        left_query = self._query_range(start, mid, l, r, 2 * node + 1)
+        right_query = self._query_range(mid + 1, end, l, r, 2 * node + 2)
+        return max(left_query, right_query)
+
+    def query_range(self, l, r):
+        return self._query_range(0, self.n - 1, l, r, 0)
+
+# st = SegmentTree(MAX)
+# st.update_range(prev + 1, x, x - prev)
+# st.update_range(x + 1, nxt, nxt - x)
+# st.query_range(0, p)
