@@ -948,7 +948,7 @@ for k in range(N):
 
 
 # Segment Tree
-MAX = 10 ** 6
+MAX = 10 ** 5
 INF = 10 ** 20
 
 class SegmentTree:
