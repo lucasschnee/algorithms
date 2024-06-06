@@ -1021,3 +1021,23 @@ class SegmentTree:
 # st.update_range(prev + 1, x, x - prev)
 # st.update_range(x + 1, nxt, nxt - x)
 # st.query_range(0, p)
+
+def lca(node):
+
+    if not node:
+	return None
+
+    if node in nodes: 
+	return node
+
+    left = lca(node.left)
+
+    right = lca(node.right)
+
+    if left and right:
+	return node
+
+    if left:
+	return left
+
+    return right
