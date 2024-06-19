@@ -1041,3 +1041,35 @@ def lca(node):
 	return left
 
     return right
+
+
+class TrieNode:
+
+    def __init__(self, is_word=False):
+        self.is_word = is_word
+        self.children = [None] * 26
+
+class Trie:
+
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word: str) -> None:
+        node = self.root
+        for c in word:
+            if not node.children[ord(c) - ord('a')]:
+                node.children[ord(c) - ord('a')] = TrieNode()
+		    
+            node = node.children[ord(c) - ord('a')]
+
+        node.is_word = True
+
+    def search(self, word: str) -> bool:
+        
+        node = self.root
+        for c in word:
+            if not node.children[ord(c) - ord('a')]:
+                return False
+            node = node.children[ord(c) - ord('a')]
+
+        return node.is_word
