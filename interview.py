@@ -1114,3 +1114,6 @@ class BIT:
             k -= k & -k
         return ans
 
+B = BIT(N + 5)
+B.rangeQuery(l, r)
+B.incr(l, r)
