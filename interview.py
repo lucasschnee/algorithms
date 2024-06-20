@@ -1073,3 +1073,44 @@ class Trie:
             node = node.children[ord(c) - ord('a')]
 
         return node.is_word
+
+
+class BIT:
+    # ranged query and ranged update 
+    def __init__(self, size):
+        self.n = size
+        self.B1 = [0] * (self.n+1)
+        self.B2 = [0] * (self.n+1)
+
+    def incr(self, s, e):
+        # [s, e]
+        self.rangeUpdate(s, e, 1)
+
+    def rangeUpdate(self, s, e, d):
+        s += 1
+        e += 1
+        self._add(self.B1, s, d)
+        self._add(self.B1, e+1, -d)
+        self._add(self.B2, s, d*(s-1))
+        self._add(self.B2, e+1, -d*e)
+
+    def _add(self, B, k, d):
+        while k <= self.n:
+            B[k] += d
+            k += k & -k
+
+    def rangeQuery(self, s, e):
+        # [s, e]
+        s, e = s+1, e+1
+        return self._sum(e) - self._sum(s-1)
+
+    def _sum(self, k):
+        return self._sumOf(self.B1, k) * k - self._sumOf(self.B2, k)
+
+    def _sumOf(self, B, k):
+        ans = 0
+        while k > 0:
+            ans += B[k]
+            k -= k & -k
+        return ans
+
