@@ -1120,3 +1120,7 @@ class BIT:
 B = BIT(N + 5)
 B.rangeQuery(l, r)
 B.incr(l, r)
+
+
+# Rotate 90 degrees
+# list(zip(*reversed(grid)))
