@@ -1122,5 +1122,13 @@ B.rangeQuery(l, r)
 B.incr(l, r)
 
 
+# divisors, factors
+divisors = set()
+for i in range(1, ceil(n**0.5) + 1): 
+    if n % i == 0: 
+	divisors.add(i)   
+	divisors.add(n // i)  
+
+
 # Rotate 90 degrees
 # list(zip(*reversed(grid)))
