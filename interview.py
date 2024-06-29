@@ -913,12 +913,14 @@ class MAX_BIT:
         self.stree = [-self.INF] * (N + 1)
     
     def update(self, i, x):
+	i += 1
         while i < len(self.stree):
             self.stree[i] = max(self.stree[i], x)
             i |= (i + 1)
 
     def query_max(self, i):
         s = -self.INF
+	i += 1
 
         while i >= 0:
             s = max(s, self.stree[i])
