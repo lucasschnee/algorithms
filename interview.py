@@ -1132,5 +1132,19 @@ for i in range(1, ceil(n**0.5) + 1):
 	divisors.add(n // i)  
 
 
+# primes
+primes = [0] * n
+
+total = 0
+
+for i in range(2, n):
+    
+    if not primes[i]:
+	total += 1
+
+	for j in range(i, n, i):
+	    primes[j] = 1
+
+
 # Rotate 90 degrees
-# list(zip(*reversed(grid)))
+grid = list(zip(*reversed(grid)))
