@@ -1148,3 +1148,75 @@ for i in range(2, n):
 
 # Rotate 90 degrees
 grid = list(zip(*reversed(grid)))
+
+
+
+
+# tree diameter and tree center
+def bfs_farthest_node(start, graph):
+    n = len(graph)
+    visited = [False] * n
+    dist = [0] * n
+    queue = deque([start])
+    visited[start] = True
+    farthest_node = start
+
+    while queue:
+        node = queue.popleft()
+        for neighbor in graph[node]:
+            if not visited[neighbor]:
+                visited[neighbor] = True
+                dist[neighbor] = dist[node] + 1
+                queue.append(neighbor)
+                if dist[neighbor] > dist[farthest_node]:
+                    farthest_node = neighbor
+
+    return farthest_node, dist[farthest_node]
+
+def find_tree_diameter(edges):
+    n = len(edges) + 1
+    # Build the adjacency list
+    graph = defaultdict(list)
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+
+    # Start from any node (Node 0 in this case)
+    farthest_node, _ = bfs_farthest_node(0, graph)
+    # Find the farthest node from the previously found farthest node
+    farthest_node, diameter = bfs_farthest_node(farthest_node, graph)
+    return diameter
+
+def find_tree_center(edges):
+    n = len(edges) + 1
+    if n == 1:
+        return [0]
+
+    # Build the adjacency list
+    graph = defaultdict(list)
+    degree = [0] * n
+    for u, v in edges:
+        graph[u].append(v)
+        graph[v].append(u)
+        degree[u] += 1
+        degree[v] += 1
+
+    # Initialize leaves
+    leaves = deque()
+    for i in range(n):
+        if degree[i] == 1:
+            leaves.append(i)
+
+    # Trim leaves until reaching the center
+    remaining_nodes = n
+    while remaining_nodes > 2:
+        leaves_count = len(leaves)
+        remaining_nodes -= leaves_count
+        for _ in range(leaves_count):
+            leaf = leaves.popleft()
+            for neighbor in graph[leaf]:
+                degree[neighbor] -= 1
+                if degree[neighbor] == 1:
+                    leaves.append(neighbor)
+
+    return list(leaves)
