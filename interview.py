@@ -1220,3 +1220,97 @@ def find_tree_center(edges):
                     leaves.append(neighbor)
 
     return list(leaves)
+
+
+
+class ConvexHull:
+    def __init__(self, p):
+        p.sort()
+        self.points = p
+        self.N = len(self.points)
+ 
+    def nextToTop(self, stack):
+        a = stack.pop()
+        b = stack.pop()
+        stack.append(a)
+        return b
+    
+    def swap(self, p1, p2):
+        return p2, p1
+    
+    def distSq(self, p1, p2):
+        return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
+    
+    
+    def convexHull(self):
+        # call first for "extreme" points
+        if self.N <= 3:
+            return self.points
+    
+        hull = []
+    
+        l = 0
+        for i in range(1, self.N):
+            if (self.points[i][0] < self.points[l][0]):
+                l = i
+    
+        p = l
+        q = 0
+        while (True):
+    
+           
+            hull.append(self.points[p])
+    
+            q = (p + 1) % self.N
+    
+            for i in range(0, self.N):
+    
+                
+                if (self.orientation(self.points[p], self.points[i], self.points[q]) == 2):
+                    q = i
+    
+            p = q
+    
+            if (p == l):
+                break
+    
+        
+        return hull
+    
+    
+    def orientation(self, p, q, r):
+        val = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+    
+        if (val == 0):
+            return 0  # collinear
+        elif (val > 0):
+            return 1   # clock or wise
+        else:
+            return 2   # counterclock or wise
+
+
+    def points_on_segment(self, p1, p2, p):
+        if (p2[0] - p1[0]) * (p[1] - p1[1]) != (p2[1] - p1[1]) * (p[0] - p1[0]):
+            return False
+       
+        if min(p1[0], p2[0]) <= p[0] <= max(p1[0], p2[0]) and min(p1[1], p2[1]) <= p[1] <= max(p1[1], p2[1]):
+            return True
+        return False
+
+    def points_on_hull(self, arr: List[List[int]], hull: List[List[int]]) -> List[List[int]]:
+        # Call for "all" points
+        hull_set = set(tuple(point) for point in hull)
+        result = []
+
+        for point in hull:
+            result.append(point)
+        
+        for i in range(len(hull)):
+            p1 = hull[i]
+            p2 = hull[(i + 1) % len(hull)] 
+            
+            for point in arr:
+                if point not in hull and self.points_on_segment(p1, p2, point):
+                    result.append(point)
+        
+        return result
