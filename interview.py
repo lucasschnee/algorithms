@@ -1,31 +1,13 @@
-"""INTERVIEW QUESTIONS"""
-
-"""BIT OPERATIONS 
-
 n & n-1 # unset last set bit 
 n & -n # retain last set bit 
-"""
 
+directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
-"""
-Fibonacci numbers were introduced by Italian mathematician Fibonacci in his 
-1202 book Liber Abaci as
+for dx, dy in directions:
+    nx, ny = x + dx, y + dy
 
-F(n) = F(n-1) + F(n-2)
-
-where F(0) = 0 and F(1) = 1. For example, 
-
-  index : 0, 1, 2, 3, 4, 5, 6, 7,  8,  9,  10, 11, 12,  13, ... 
-numbers : 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, ...
-
-The nth Fibonacci number can be computed from its definition as O(N) algorithm.
-
-In addition, there are 2 known formula which can provide O(1) algorithm. 
-phi = (sqrt(5) + 1)/2 (golden ratio)
-F(n) = (phi**n - (1/phi)**n)/sqrt(5) or F(n) = [phi**n/sqrt(5)]
-"""
-
-
+    if not (0 <= nx < M) or not (0 <= ny < N):
+	continue
 
 def boyer_moore(pattern, text):
     """Boyer-Moore string search algorithm"""
