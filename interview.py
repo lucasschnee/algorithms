@@ -700,3 +700,71 @@ def convex_hull(points):
 	lower.append(tuple(t))
 	
     return list(set(upper+lower))   
+
+
+
+
+
+class XORTrieNode:
+    def __init__(self):
+        self.count = 0
+        self.children = {}
+
+class XORTrie:
+    def __init__(self):
+        self.root = TrieNode()
+
+    def add(self, num: int) -> None:
+        node = self.root
+        for i in range(16, -1, -1):
+            val = (num >> i) & 1
+            if val not in node.children:
+                node.children[val] = TrieNode()
+            node = node.children[val]
+            node.count += 1
+
+
+
+    def count(self, num: int, upper: int) -> int:
+        node = self.root
+        total = 0
+
+        for i in range(16, -1, -1):
+            val = (num >> i) & 1
+            val2 = (upper >> i) & 1
+
+            if val == 1 and val2 == 1:
+                if 1 in node.children:
+                    total += node.children[1].count
+            
+                if 0 not in node.children:
+                    return total
+                
+                node = node.children[0]
+
+                
+            elif val == 1 and val2 == 0:
+                if 1 not in node.children:
+                    return total
+                
+                node = node.children[1]
+
+            elif val == 0 and val2 == 1:
+                if 0 in node.children:
+                    total += node.children[0].count
+            
+                if 1 not in node.children:
+                    return total
+                
+                node = node.children[1]
+
+            
+            elif val == 0 and val2 == 0:
+                if 0 not in node.children:
+                    return total
+                node = node.children[0]
+                
+                
+        total += node.count
+        return total
+
