@@ -119,6 +119,49 @@ class MinSegTree:
 
 
 INF = 10 ** 30
+class SegTree:
+    def __init__(self, nums):
+
+        self.ar = [[None] * 4 for _ in range(4 * len(nums) + 1)]
+        self.build(0, 0, len(nums) - 1, nums)
+    
+    def combine(self, t1, t2):
+        nn1, ny1, yn1, yy1 = t1
+        nn2, ny2, yn2, yy2 = t2
+        nn = max(nn1 + yn2, nn1 + nn2, ny1 + nn2)
+        ny = max(nn1 + yy2, nn1 + ny2, ny1 + ny2)
+        yn = max(yn1 + yn2, yn1 + nn2, yy1 + nn2)
+        yy = max(yn1 + yy2, yn1 + ny2, yy1 + ny2)
+        return [nn, ny, yn, yy]
+    
+    def build(self, i, l, r, nums):
+        
+        if l == r:
+            # One element, YN and NY doesnt exist
+            self.ar[i] = [0, -INF, -INF, nums[l]]
+        else:
+            m = (l+r) // 2
+            self.build(2*i+1, l, m, nums)
+            self.build(2*i+2, m+1, r, nums)
+            self.ar[i] = self.combine(self.ar[2*i+1], self.ar[2*i+2])
+        
+    def update_v(self, i, l, r, idx, v):
+        if l == r and l == idx:
+
+            self.ar[i] = [0, -INF, -INF, v]
+
+        else:
+            m = (l+r)//2
+            if m < idx:
+                self.update_v(2*i+2, m+1, r, idx, v)
+            else:
+                self.update_v(2*i+1, l, m, idx, v)
+            self.ar[i] = self.combine(self.ar[2*i+1], self.ar[2*i+2])
+		
+
+
+
+INF = 10 ** 30
 class SpecialSegTree:
     def __init__(self, nums):
 
@@ -158,24 +201,7 @@ class SpecialSegTree:
                 self.update_v(2*i+1, l, m, idx, v)
             self.ar[i] = self.combine(self.ar[2*i+1], self.ar[2*i+2])
 
-class Solution:
-    def maximumSumSubsequence(self, nums: List[int], queries: List[List[int]]) -> int:
-        MOD = 10 ** 9 + 7
-        N = len(nums)
-        for i in range(N):
-            if nums[i] < 0:
-                nums[i] = 0
-        ST = SegTree(nums)
-        res = 0
-        
-        for pos, x in queries:
-            if x < 0:
-                x = 0
-            ST.update_v(0, 0, N-1, pos, x)
-            
-            res += max(ST.ar[0])
-            res %= MOD
-        return res
+
 
 
 def manacher(s: str) -> str:               
