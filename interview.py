@@ -122,33 +122,24 @@ INF = 10 ** 30
 class SegTree:
     def __init__(self, nums):
 
-        self.ar = [[None] * 4 for _ in range(4 * len(nums) + 1)]
+        self.ar = [0] * (4 * len(nums) + 1)
         self.build(0, 0, len(nums) - 1, nums)
     
-    def combine(self, t1, t2):
-        nn1, ny1, yn1, yy1 = t1
-        nn2, ny2, yn2, yy2 = t2
-        nn = max(nn1 + yn2, nn1 + nn2, ny1 + nn2)
-        ny = max(nn1 + yy2, nn1 + ny2, ny1 + ny2)
-        yn = max(yn1 + yn2, yn1 + nn2, yy1 + nn2)
-        yy = max(yn1 + yy2, yn1 + ny2, yy1 + ny2)
-        return [nn, ny, yn, yy]
-    
+
     def build(self, i, l, r, nums):
-        
         if l == r:
-            # One element, YN and NY doesnt exist
-            self.ar[i] = [0, -INF, -INF, nums[l]]
+           
+            self.ar[i] = nums[l]
         else:
             m = (l+r) // 2
             self.build(2*i+1, l, m, nums)
             self.build(2*i+2, m+1, r, nums)
-            self.ar[i] = self.combine(self.ar[2*i+1], self.ar[2*i+2])
+            self.ar[i] = self.ar[2*i+1] + self.ar[2*i+2]
         
     def update_v(self, i, l, r, idx, v):
+        # self.ST.update_v(0, 0, self.N - 1, index, val)
         if l == r and l == idx:
-
-            self.ar[i] = [0, -INF, -INF, v]
+            self.ar[i] = v
 
         else:
             m = (l+r)//2
@@ -156,8 +147,18 @@ class SegTree:
                 self.update_v(2*i+2, m+1, r, idx, v)
             else:
                 self.update_v(2*i+1, l, m, idx, v)
-            self.ar[i] = self.combine(self.ar[2*i+1], self.ar[2*i+2])
-		
+
+            self.ar[i] = self.ar[2*i+1] + self.ar[2*i+2]
+
+
+    def query(self, qlo, qhi, i, l, r) -> int:    
+        # self.ST.query(left, right, 0, 0, self.N - 1)
+        if qlo <= l and r <= qhi:  
+            return self.ar[i]
+        if qhi < l or r < qlo:  
+            return 0
+        m = (l + r) // 2
+        return self.query(qlo, qhi, 2 * i + 1, l, m) + self.query(qlo, qhi, 2 * i + 2, m + 1, r)
 
 
 
