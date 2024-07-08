@@ -81,7 +81,7 @@ def date2num(y, m, d):
     if m < 3: y, m = y-1, m+12
     return 365*y+y//4+y//400-y//100+d+(153*m+8)//5
 
-class SegTree: 
+class MinSegTree: 
     """A segment tree, aka a statistic tree, is a tree data structure used for 
     storing information about intervals. It allows querying which of the stored 
     segments contain a given point."""
