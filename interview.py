@@ -75,11 +75,6 @@ def rabin_karp(pattern, text):
     return occurrences
         
     
-def date2num(y, m, d):
-    """A magical formula to convert date to num such that 
-    the difference of two dates reflects the days in between"""
-    if m < 3: y, m = y-1, m+12
-    return 365*y+y//4+y//400-y//100+d+(153*m+8)//5
 
 class MinSegTree: 
     """A segment tree, aka a statistic tree, is a tree data structure used for 
@@ -122,58 +117,49 @@ class MinSegTree:
         return min(self.query(qlo, qhi, 2*k+1, lo, mid), self.query(qlo, qhi, 2*k+2, mid, hi))
 
 
-def tarjan(n: int, connections: List[List[int]]) -> List[List[int]]:
-    """Tarjan's algo to find bridges (critical edges) in a graph."""
-    graph = {} # graph as adjacency list 
-    for u, v in connections: 
-        graph.setdefault(u, []).append(v)
-        graph.setdefault(v, []).append(u)
-    
-    def dfs(x, p, step): 
-        """Traverse the graph and collect bridges using Tarjan's algo."""
-        disc[x] = low[x] = step
-        for xx in graph.get(x, []): 
-            if disc[xx] == inf: 
-                step += 1
-                dfs(xx, x, step)
-                low[x] = min(low[x], low[xx])
-                if low[xx] > disc[x]: ans.append([x, xx]) # bridge
-            elif xx != p: low[x] = min(low[x], disc[xx])
-    
-    ans = []
-    low = [inf]*n
-    disc = [inf]*n
-    
-    dfs(0, -1, 0)
-    return ans 
 
+class RangeSumSegmentTree:
+    def __init__(self, arr: List[int]):
+        """Initialize the segment tree for range sum queries."""
+        self.n = len(arr)
+        self.tree = [0] * (4 * self.n)
+        self._build(arr, 0, 0, self.n)
 
-def hasEulerianPath(graph): 
-    """Return True if given graph has an Eulerian path."""
-    indeg = [0]*len(graph)
-    outdeg = [0]*len(graph)
-    for u, nodes in graph: 
-        outdeg[u] = len(nodes)
-        for v in nodes: indeg[v] += 1
-    start = end = 0 
-    for x in range(len(graph)): 
-        if abs(indeg[x] - outdeg[x]) > 1: return False 
-        if outdeg[x] - indeg[x] == 1: start += 1
-        elif indeg[x] - outdeg[x] == 1: end += 1
-    return start == end == 0 or start == end == 1
+    def _build(self, arr: List[int], k: int, lo: int, hi: int) -> None:
+        """Build the segment tree from the array."""
+        if lo + 1 == hi:
+            self.tree[k] = arr[lo]
+        else:
+            mid = lo + hi >> 1
+            self._build(arr, 2 * k + 1, lo, mid)
+            self._build(arr, 2 * k + 2, mid, hi)
+            self.tree[k] = self.tree[2 * k + 1] + self.tree[2 * k + 2]
 
+    def update(self, idx: int, val: int, k: int = 0, lo: int = 0, hi: int = 0) -> None:
+        """Update the segment tree with a new value at a specific index."""
+        if not hi: hi = self.n
+        if lo + 1 == hi:
+            self.tree[k] = val
+        else:
+            mid = lo + hi >> 1
+            if idx < mid:
+                self.update(idx, val, 2 * k + 1, lo, mid)
+            else:
+                self.update(idx, val, 2 * k + 2, mid, hi)
+            self.tree[k] = self.tree[2 * k + 1] + self.tree[2 * k + 2]
 
-def hierholzer(graph):
-    """Return an Eulerian path via Hierholzer algo"""
-    ans = []
+    def query(self, qlo: int, qhi: int, k: int = 0, lo: int = 0, hi: int = 0) -> int:
+        """Query the sum of the range [qlo, qhi)."""
+        if not hi: hi = self.n
+        if qlo <= lo and hi <= qhi:
+            return self.tree[k]
+        if qhi <= lo or hi <= qlo:
+            return 0
+        mid = lo + hi >> 1
+        left_sum = self.query(qlo, qhi, 2 * k + 1, lo, mid)
+        right_sum = self.query(qlo, qhi, 2 * k + 2, mid, hi)
+        return left_sum + right_sum
 
-    def fn(x): 
-        """Return Eulerian path via dfs."""
-        while graph[x]: fn(graph[x].pop()) 
-        ans.append(x)
-
-    ans.reverse()
-    return ans 
 
 
 def manacher(s: str) -> str:               
