@@ -118,48 +118,64 @@ class MinSegTree:
 
 
 
-class RangeSumSegmentTree:
-    def __init__(self, arr: List[int]):
-        """Initialize the segment tree for range sum queries."""
-        self.n = len(arr)
-        self.tree = [0] * (4 * self.n)
-        self._build(arr, 0, 0, self.n)
+INF = 10 ** 30
+class SpecialSegTree:
+    def __init__(self, nums):
 
-    def _build(self, arr: List[int], k: int, lo: int, hi: int) -> None:
-        """Build the segment tree from the array."""
-        if lo + 1 == hi:
-            self.tree[k] = arr[lo]
+        self.ar = [[None] * 4 for _ in range(4 * len(nums) + 1)]
+        self.build(0, 0, len(nums) - 1, nums)
+    
+    def combine(self, t1, t2):
+        nn1, ny1, yn1, yy1 = t1
+        nn2, ny2, yn2, yy2 = t2
+        nn = max(nn1 + yn2, nn1 + nn2, ny1 + nn2)
+        ny = max(nn1 + yy2, nn1 + ny2, ny1 + ny2)
+        yn = max(yn1 + yn2, yn1 + nn2, yy1 + nn2)
+        yy = max(yn1 + yy2, yn1 + ny2, yy1 + ny2)
+        return [nn, ny, yn, yy]
+    
+    def build(self, i, l, r, nums):
+        
+        if l == r:
+            # One element, YN and NY doesnt exist
+            self.ar[i] = [0, -INF, -INF, nums[l]]
         else:
-            mid = lo + hi >> 1
-            self._build(arr, 2 * k + 1, lo, mid)
-            self._build(arr, 2 * k + 2, mid, hi)
-            self.tree[k] = self.tree[2 * k + 1] + self.tree[2 * k + 2]
+            m = (l+r) // 2
+            self.build(2*i+1, l, m, nums)
+            self.build(2*i+2, m+1, r, nums)
+            self.ar[i] = self.combine(self.ar[2*i+1], self.ar[2*i+2])
+        
+    def update_v(self, i, l, r, idx, v):
+        if l == r and l == idx:
 
-    def update(self, idx: int, val: int, k: int = 0, lo: int = 0, hi: int = 0) -> None:
-        """Update the segment tree with a new value at a specific index."""
-        if not hi: hi = self.n
-        if lo + 1 == hi:
-            self.tree[k] = val
+            self.ar[i] = [0, -INF, -INF, v]
+
         else:
-            mid = lo + hi >> 1
-            if idx < mid:
-                self.update(idx, val, 2 * k + 1, lo, mid)
+            m = (l+r)//2
+            if m < idx:
+                self.update_v(2*i+2, m+1, r, idx, v)
             else:
-                self.update(idx, val, 2 * k + 2, mid, hi)
-            self.tree[k] = self.tree[2 * k + 1] + self.tree[2 * k + 2]
+                self.update_v(2*i+1, l, m, idx, v)
+            self.ar[i] = self.combine(self.ar[2*i+1], self.ar[2*i+2])
 
-    def query(self, qlo: int, qhi: int, k: int = 0, lo: int = 0, hi: int = 0) -> int:
-        """Query the sum of the range [qlo, qhi)."""
-        if not hi: hi = self.n
-        if qlo <= lo and hi <= qhi:
-            return self.tree[k]
-        if qhi <= lo or hi <= qlo:
-            return 0
-        mid = lo + hi >> 1
-        left_sum = self.query(qlo, qhi, 2 * k + 1, lo, mid)
-        right_sum = self.query(qlo, qhi, 2 * k + 2, mid, hi)
-        return left_sum + right_sum
-
+class Solution:
+    def maximumSumSubsequence(self, nums: List[int], queries: List[List[int]]) -> int:
+        MOD = 10 ** 9 + 7
+        N = len(nums)
+        for i in range(N):
+            if nums[i] < 0:
+                nums[i] = 0
+        ST = SegTree(nums)
+        res = 0
+        
+        for pos, x in queries:
+            if x < 0:
+                x = 0
+            ST.update_v(0, 0, N-1, pos, x)
+            
+            res += max(ST.ar[0])
+            res %= MOD
+        return res
 
 
 def manacher(s: str) -> str:               
