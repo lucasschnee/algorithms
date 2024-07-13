@@ -797,3 +797,34 @@ class XORTrie:
         total += node.count
         return total
 
+
+
+
+
+def shortest_path_calc(vertex_weights, lookup):
+    INF = 10 ** 20
+    min_dist = [INF] * N
+    min_dist[0] = vertex_weights[0]
+
+    h = []
+    heapq.heappush(h, (vertex_weights[0], 0))
+
+    while h:
+        val, u = heapq.heappop(h)
+
+        if min_dist[u] < val:
+            continue
+
+        for v, w in lookup[u]:
+            vertex_weight = vertex_weights[v]
+
+            total_weight = w + val + vertex_weight
+
+            if total_weight >= min_dist[v]:
+                continue
+
+            min_dist[v] = total_weight
+            heapq.heappush(h, (total_weight, v))
+
+    return min_dist
+
