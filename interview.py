@@ -828,3 +828,23 @@ def shortest_path_calc(vertex_weights, lookup):
 
     return min_dist
 
+
+
+  def lca(node):
+    if not node:
+	return None
+
+    if node in [p, q]:
+	return node
+
+    left = lca(node.left)
+    right = lca(node.right)
+
+    if left and right:
+	return node
+
+    if left:
+	return left
+
+    return right
+
