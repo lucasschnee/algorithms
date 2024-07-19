@@ -561,8 +561,10 @@ for i in range(2, n):
 
 
 # Rotate 90 degrees
-grid = list(zip(*reversed(grid)))
+matrix = list(zip(*reversed(matrix)))
 
+# Transpose
+matrix = list(zip(*matrix))
 
 
 
