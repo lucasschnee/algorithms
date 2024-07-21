@@ -777,3 +777,32 @@ def shortest_path_calc(vertex_weights, lookup):
 
     return right
 
+
+# topological sort
+edges_to = defaultdict(set)
+edges_from = defaultdict(set)
+
+for u, v in edges:
+    edges_to[v].add(u)
+    edges_from[u].add(v)
+
+def topo_sort(edges_to, edges_from):
+    q = deque()
+    for v in range(1, k + 1):
+	if len(edges_from[v]) == 0:
+	    q.append(v)
+
+    arr = []
+
+    while q:
+	u = q.popleft()
+	arr.append(u)
+	for v in edges_to[u]:
+	    edges_from[v].remove(u)
+	    if not edges_from[v]:
+		q.append(v)
+
+
+    arr.reverse()
+    return arr
+
