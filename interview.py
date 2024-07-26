@@ -757,6 +757,31 @@ def shortest_path_calc(vertex_weights, lookup):
 
     return min_dist
 
+  def shortest_path_calc(src):
+    min_dist = [INF] * N
+    min_dist[src] = 0
+
+    h = []
+    heapq.heappush(h, (0, src))
+
+    while h:
+	val, u = heapq.heappop(h)
+
+	if min_dist[u] < val:
+	    continue
+
+	for v, w in lookup[u]:
+	    
+	    total_weight = w + val 
+
+	    if total_weight >= min_dist[v]:
+		continue
+
+	    min_dist[v] = total_weight
+	    heapq.heappush(h, (total_weight, v))
+
+    return min_dist
+
 
 
   def lca(node):
