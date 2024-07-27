@@ -229,6 +229,55 @@ class RangeSegmentTree:
         return left_query + right_query
 
 
+class RangeZeroSegmentTree:
+    def __init__(self, size):
+        self.size = size
+        self.tree = [{'cnt_add': 0, 'total': 0} for _ in range(4 * size)]
+        self.init()
+
+    def init(self, x=1, l=0, r=None):
+        if r is None:
+            r = self.size
+
+        self.tree[x] = {'cnt_add': 0, 'total': 0}
+        if r - l < 2:
+            return
+
+        m = (l + r) // 2
+        self.init(2 * x, l, m)
+        self.init(2 * x + 1, m, r)
+
+    def update_range(self, L, R, v, x=1, l=0, r=None):
+        # ST.update_range(0, 9, 1)  # update range [0, 9) with val
+        if r is None:
+            r = self.size
+
+        if r <= L or R <= l:
+            return
+        if L <= l and r <= R:
+            self.tree[x]['cnt_add'] += v
+            if self.tree[x]['cnt_add']:
+                self.tree[x]['total'] = r - l
+            else:
+                if r - l > 1:
+                    self.tree[x]['total'] = self.tree[2 * x]['total'] + self.tree[2 * x + 1]['total']
+                else:
+                    self.tree[x]['total'] = 0
+            return
+
+        m = (l + r) // 2
+        self.update_range(L, R, v, 2 * x, l, m)
+        self.update_range(L, R, v, 2 * x + 1, m, r)
+
+        if self.tree[x]['cnt_add']:
+            self.tree[x]['total'] = r - l
+        else:
+            self.tree[x]['total'] = self.tree[2 * x]['total'] + self.tree[2 * x + 1]['total']
+
+    def get_zeroes(self):
+        # returns number of 0s in the array
+        return self.size - self.tree[1]['total']
+
 
 
 INF = 10 ** 30
