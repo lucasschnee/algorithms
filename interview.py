@@ -161,6 +161,75 @@ class SegTree:
         return self.query(qlo, qhi, 2 * i + 1, l, m) + self.query(qlo, qhi, 2 * i + 2, m + 1, r)
 
 
+class RangeSegmentTree:
+    def __init__(self, size):
+        self.n = size
+        self.tree = [0] * (4 * size)
+        self.lazy = [0] * (4 * size)
+
+    def build(self, start, end, idx, data):
+        if start == end:
+            self.tree[idx] = data[start]
+        else:
+            mid = (start + end) // 2
+            self.build(start, mid, 2 * idx + 1, data)
+            self.build(mid + 1, end, 2 * idx + 2, data)
+            self.tree[idx] = self.tree[2 * idx + 1] + self.tree[2 * idx + 2]
+
+    def update_range(self, l, r, val, idx=0, start=0, end=None):
+        # ST.update_range(left_bound, right_bound, val)
+        # ST.update_range(0, 10, 1)
+        if end is None:
+            end = self.n - 1
+
+        if self.lazy[idx] != 0:
+            self.tree[idx] += (end - start + 1) * self.lazy[idx]
+            if start != end: 
+                self.lazy[2 * idx + 1] += self.lazy[idx]
+                self.lazy[2 * idx + 2] += self.lazy[idx]
+            self.lazy[idx] = 0
+
+        if start > r or end < l:
+            return
+
+        if l <= start and end <= r:
+            self.tree[idx] += (end - start + 1) * val
+            if start != end:
+                self.lazy[2 * idx + 1] += val
+                self.lazy[2 * idx + 2] += val
+            return
+
+        mid = (start + end) // 2
+        self.update_range(l, r, val, 2 * idx + 1, start, mid)
+        self.update_range(l, r, val, 2 * idx + 2, mid + 1, end)
+        self.tree[idx] = self.tree[2 * idx + 1] + self.tree[2 * idx + 2]
+
+    def query_range(self, l, r, idx=0, start=0, end=None):
+        # ST.query_range(left_bound, right_bound)
+        # ST.query_range(0, 10)
+        if end is None:
+            end = self.n - 1
+
+        if self.lazy[idx] != 0:
+            self.tree[idx] += (end - start + 1) * self.lazy[idx]
+            if start != end:
+                self.lazy[2 * idx + 1] += self.lazy[idx]
+                self.lazy[2 * idx + 2] += self.lazy[idx]
+            self.lazy[idx] = 0
+
+        if start > r or end < l:
+            return 0
+
+        if l <= start and end <= r:
+            return self.tree[idx]
+
+        mid = (start + end) // 2
+        left_query = self.query_range(l, r, 2 * idx + 1, start, mid)
+        right_query = self.query_range(l, r, 2 * idx + 2, mid + 1, end)
+        return left_query + right_query
+
+
+
 
 INF = 10 ** 30
 class SpecialSegTree:
