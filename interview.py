@@ -74,7 +74,25 @@ def rabin_karp(pattern, text):
 	    j = lps[j - 1]
     return occurrences
         
-    
+class BIT():
+    def __init__(self, n):
+        self.n = n
+        self.tree = [0] * (n + 1)
+
+    def query(self, i):
+        ans = 0
+        i += 1
+        while i > 0:
+            ans += self.tree[i]
+            i -= (i & (-i))
+        return ans
+
+    def update(self, i, value):
+        i += 1
+        while i <= self.n:
+            self.tree[i] += value
+            i += (i & (-i))
+		
 
 class MinSegTree: 
     """A segment tree, aka a statistic tree, is a tree data structure used for 
