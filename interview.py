@@ -1,6 +1,3 @@
-n & n-1 # unset last set bit 
-n & -n # retain last set bit 
-
 directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
 for dx, dy in directions:
