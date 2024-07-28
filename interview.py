@@ -74,7 +74,7 @@ def rabin_karp(pattern, text):
 	    j = lps[j - 1]
     return occurrences
         
-class BIT():
+class BIT:
     def __init__(self, n):
         self.n = n
         self.tree = [0] * (n + 1)
@@ -474,32 +474,7 @@ class BinaryLifting:
 
 
 
-class BIT:
 
-    def __init__(self, N):
-        self.N = N
-        self.tree = [0] * (N + 1)
-
-    def query(self, k):
-        k += 1
-        ans = 0
-
-        while k: 
-            ans += self.tree[k]
-
-            k -= k & -k
-
-        return ans
-
-    def update(self, k, x):
-        current = self.query(k)
-        if k != 0:
-            current -= self.query(k - 1)
-        diff = x - current
-        k += 1
-        while k < len(self.tree):
-            self.tree[k] += diff
-            k += k & -k
 
 
 def merge_sort(arr):
