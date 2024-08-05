@@ -89,6 +89,34 @@ class BIT:
         while i <= self.n:
             self.tree[i] += value
             i += (i & (-i))
+
+# Range Binary Indexed Tree
+class RBIT:
+    def __init__(self, N: int):
+        self.b1 = [0] * (N + 1)
+        self.b2 = [0] * (N + 1)
+
+    def incr(self, arr, i, x):
+        while i <= len(arr):
+            arr[i] += x
+            i += i & -i
+
+    def range_add(self, l, r, x):
+        self.incr(self.b1, l, x)
+        self.incr(self.b1, r + 1, -x)
+        self.incr(self.b2, l, x * (l - 1))
+        self.incr(self.b2, r + 1, -x * r)
+
+    def total(self, arr, i):
+        s = 0
+        while i > 0:
+            s += arr[i]
+            i -= i & -i
+        return s
+
+    def rtotal(self, i):
+        return self.total(self.b1, i) * i - self.total(self.b2, i)
+
 		
 
 class MinSegTree: 
