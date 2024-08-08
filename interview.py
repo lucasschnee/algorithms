@@ -1054,7 +1054,7 @@ class SortedList:
             self.fenwick = FenwickTree(self.micro_size)
             self.macro.insert(i, self.micros[i + 1][0])
 
-    def discard(self,x):
+    def remove(self,x):
         i = self.bisect_left(x)
         if i >= self.size:
             return
