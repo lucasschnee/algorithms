@@ -675,12 +675,13 @@ B.incr(l, r)
 
 
 def get_divisors(n):
-	# divisors, factors
-	divisors = set()
-	for i in range(1, ceil(n**0.5) + 1): 
-	    if n % i == 0: 
-		divisors.add(i)   
-		divisors.add(n // i)  
+    divisors = set()
+    for i in range(1, ceil(n**0.5) + 1):
+        if n % i == 0:
+            divisors.add(i)
+            divisors.add(n // i)
+            
+    return divisors
 
 
 # primes
