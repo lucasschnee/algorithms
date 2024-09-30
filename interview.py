@@ -46,6 +46,11 @@ def rabin_karp(pattern, text):
 
 
 def kmp(pattern, text):
+    '''
+    Given a word pattern and target text, returns an array ans
+    where ans[i] means the length of the longest prefix of the pattern that is a suffix of text[:i+1].
+    In other words, ans[i] is the length of the longest prefix of the pattern that matches a substring ending at position i in the text.
+    '''
     k = 0
     lps = [0] 
     for i in range(1, len(pattern)):
