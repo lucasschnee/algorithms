@@ -45,31 +45,20 @@ def rabin_karp(pattern, text):
     return False 
 
 
- def KMP(pref, s):
-    m, n = len(pref), len(s)
-    lps = [0] * m
-    j = 0  # length of the previous longest prefix suffix
-    
-    # Preprocessing the pattern
-    for i in range(1, m):
-	while j and pref[j] != pref[i]:
-	    j = lps[j - 1]
-	if pref[j] == pref[i]:
-	    j += 1
-	lps[i] = j
-
-    # Searching the pattern in the text
-    occurrences = []
-    j = 0
-    for i in range(n):
-	while j and pref[j] != s[i]:
-	    j = lps[j - 1]
-	if pref[j] == s[i]:
-	    j += 1
-	if j == m:
-	    occurrences.append(i - m + 1)
-	    j = lps[j - 1]
-    return occurrences
+def kmp(pattern, text):
+    k = 0
+    lps = [0] 
+    for i in range(1, len(pattern)):
+	while k and pattern[k] != pattern[i]: k = lps[k-1]
+	if pattern[k] == pattern[i]: k += 1
+	lps.append(k)
+    k = 0
+    ans = []
+    for i, ch in enumerate(text): 
+	while k and (k == len(pattern) or pattern[k] != ch): k = lps[k-1]
+	if pattern[k] == ch: k += 1
+	ans.append(k)
+    return ans
         
 class BIT:
     def __init__(self, n):
