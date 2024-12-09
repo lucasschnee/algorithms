@@ -1099,6 +1099,34 @@ class SortedList:
         return str(list(self))
 
 
+# linear matrix exponentiation
+M = 10 ** 9 + 7
+
+# perform AB matrix multiplication
+def mat_mult(A, B):
+    size = len(A)
+    result = [[0] * size for _ in range(size)]
+    for i in range(size):
+        for j in range(size):
+            for k in range(size):
+                result[i][j] = (result[i][j] + A[i][k] * B[k][j]) % M
+    return result
 
 
+# perform mat ** exp in log exp time
+def mat_pow(mat, exp):
+    size = len(mat)
+
+    # itentity matrix
+    result = [[1 if i == j else 0 for j in range(size)] for i in range(size)]
+    base = mat
+    while exp > 0:
+        if exp % 2 == 1:
+            # return current base
+            result = mat_mult(result, base)
+
+        # otherwise, base = base * base
+        base = mat_mult(base, base)
+        exp //= 2
+    return result
 
