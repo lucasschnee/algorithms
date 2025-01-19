@@ -1127,3 +1127,24 @@ for x in range(n+1):
     combPrefix[x][0] = 1
     for r in range(1, k+1):
 	combPrefix[x][r] = (combPrefix[x][r-1] + comb(x, r)) % MOD
+
+
+'''
+triangle calculation
+
+given an interval [l, r] and a point index, coun the number of subintervals within interval that 1. contain index and 2. are at most k
+'''
+# triangle sum for interval length at most k
+interval_length = min(k, left_df + right_df + 1)
+t = interval_length * (interval_length + 1) // 2
+
+# cut smaller triangles
+if left_df < interval_length - 1:
+    q = interval_length - 1 - left_df
+    t -= q * (q + 1) // 2
+
+if right_df < interval_length - 1:
+    q = interval_length - 1 - right_df
+    t -= q * (q + 1) // 2
+
+total += t * key
