@@ -6,25 +6,6 @@ for dx, dy in directions:
     if not (0 <= nx < M) or not (0 <= ny < N):
 	continue
 
-def boyer_moore(pattern, text):
-    """Boyer-Moore string search algorithm"""
-    m, n = len(pattern), len(text)
-    jump = {}
-    for i, c in enumerate(pattern):
-        jump[c] = i 
-
-    offset = 0
-    while offset < n-m:
-        skip = 0
-        for j in reversed(range(m)):
-            if text[offset+j] != pattern[j]:
-                skip = max(1, j - jump.get(pattern[j], -1))
-                break 
-        if skip == 0: return True
-        offset += skip
-    return False #not found 
-
-
 def rabin_karp(pattern, text):
     """Rabin Karp string search algorithm (Monte Carlo)"""
     R, Q = 128, 997
@@ -1124,3 +1105,25 @@ def mat_pow(mat, exp):
         exp //= 2
     return result
 
+
+# Precompute factorials and inverse factorials for combinations
+fact = [1]*(n+1)
+invfact = [1]*(n+1)
+for i in range(1, n+1):
+    fact[i] = (fact[i-1] * i) % MOD
+invfact[n] = pow(fact[n], MOD-2, MOD)
+for i in reversed(range(n)):
+    invfact[i] = (invfact[i+1]*(i+1)) % MOD
+
+def comb(n, r):
+    if r < 0 or r > n:
+	return 0
+    return (fact[n]*((invfact[r]*invfact[n-r]) % MOD)) % MOD
+
+# Build prefix sums of C(x, 0..r) for r up to k
+# combPrefix[x][r] = sum of C(x, m) for m = 0..r
+combPrefix = [[0]*(k+1) for _ in range(n+1)]
+for x in range(n+1):
+    combPrefix[x][0] = 1
+    for r in range(1, k+1):
+	combPrefix[x][r] = (combPrefix[x][r-1] + comb(x, r)) % MOD
