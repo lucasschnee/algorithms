@@ -247,6 +247,78 @@ class RangeSegmentTree:
         return left_query + right_query
 
 
+'''
+segment tree for flipping 1s to 0s and 0s to 1s
+'''
+class RangeSegmentTree2:
+    def __init__(self, size):
+        self.n = size
+        self.tree = [0] * (4 * size)
+        self.lazy = [0] * (4 * size)
+
+    def build(self, start, end, idx, data):
+        '''
+        0, N - 1, 0, nums
+        '''
+        if start == end:
+            self.tree[idx] = data[start]
+        else:
+            mid = (start + end) // 2
+            self.build(start, mid, 2 * idx + 1, data)
+            self.build(mid + 1, end, 2 * idx + 2, data)
+            self.tree[idx] = self.tree[2 * idx + 1] + self.tree[2 * idx + 2]
+
+    def propagate(self, start, end, idx):
+        if self.lazy[idx] == 1:  # Flip bits if lazy flag is set
+            self.tree[idx] = (end - start + 1) - self.tree[idx]  # Flip values in the range
+            if start != end:  # Propagate to children
+                self.lazy[2 * idx + 1] ^= 1  # Toggle lazy flags for children
+                self.lazy[2 * idx + 2] ^= 1
+            self.lazy[idx] = 0  # Clear the lazy flag for the current node
+
+    def update_range(self, l, r, idx=0, start=0, end=None):
+        if end is None:
+            end = self.n - 1
+
+        self.propagate(start, end, idx)  # Ensure the current node is up-to-date
+
+        if start > r or end < l:
+            return  # No overlap
+
+        if l <= start and end <= r:
+            # Fully within range: flip this range
+            self.tree[idx] = (end - start + 1) - self.tree[idx]
+            if start != end:  # Mark children for lazy propagation
+                self.lazy[2 * idx + 1] ^= 1
+                self.lazy[2 * idx + 2] ^= 1
+            return
+
+        # Partial overlap
+        mid = (start + end) // 2
+        self.update_range(l, r, 2 * idx + 1, start, mid)
+        self.update_range(l, r, 2 * idx + 2, mid + 1, end)
+        self.tree[idx] = self.tree[2 * idx + 1] + self.tree[2 * idx + 2]
+
+    def query_range(self, l, r, idx=0, start=0, end=None):
+        if end is None:
+            end = self.n - 1
+
+        self.propagate(start, end, idx)  # Ensure the current node is up-to-date
+
+        if start > r or end < l:
+            return 0  # No overlap
+
+        if l <= start and end <= r:
+            return self.tree[idx]  # Fully within range
+
+        # Partial overlap
+        mid = (start + end) // 2
+        left_query = self.query_range(l, r, 2 * idx + 1, start, mid)
+        right_query = self.query_range(l, r, 2 * idx + 2, mid + 1, end)
+        return left_query + right_query
+
+
+
 class RangeZeroSegmentTree:
     def __init__(self, size):
         self.size = size
