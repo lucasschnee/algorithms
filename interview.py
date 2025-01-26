@@ -1220,3 +1220,20 @@ if right_df < interval_length - 1:
     t -= q * (q + 1) // 2
 
 total += t * key
+
+
+
+# has cycle
+NEW, VISITING, DONE = range(3)
+def has_cycle(adj):
+    color = defaultdict(int)
+    def dfs(node):
+        if color[node] != NEW:
+            return color[node] == VISITING
+        color[node] = VISITING
+        if any(dfs(nei) for nei in adj[node]):
+            return True
+        color[node] = DONE
+        return False
+
+    return any(dfs(u) for u in range(len(adj)))
