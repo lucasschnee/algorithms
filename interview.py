@@ -1236,4 +1236,4 @@ def has_cycle(adj):
         color[node] = DONE
         return False
 
-    return any(dfs(u) for u in range(len(adj)))
+    return any(dfs(u) for u in list(adj.keys()))
