@@ -32,6 +32,7 @@ class RabinKarp:
         self.m = 1_111_111_111_111_111_111
         self.pow = [1]
         self.roll = [0] # rolling hash 
+	self.N = len(s)
 
         p = 1_000_000_007
         for x in s: 
