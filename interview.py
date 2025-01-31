@@ -25,6 +25,23 @@ def rabin_karp(pattern, text):
 
     return False 
 
+class RabinKarp: 
+
+    def __init__(self, s): 
+        """Calculate rolling hash of s"""
+        self.m = 1_111_111_111_111_111_111
+        self.pow = [1]
+        self.roll = [0] # rolling hash 
+
+        p = 1_000_000_007
+        for x in s: 
+            self.pow.append(self.pow[-1] * p % self.m)
+            self.roll.append((self.roll[-1] * p + x) % self.m)
+
+    def query(self, i, j): 
+        """Return rolling hash of s[i:j]"""
+        return (self.roll[j] - self.roll[i] * self.pow[j-i]) % self.m
+
 
 def kmp(pattern, text):
     '''
@@ -92,7 +109,7 @@ class RBIT:
     def rtotal(self, i):
         return self.total(self.b1, i) * i - self.total(self.b2, i)
 
-		
+	
 
 class MinSegTree: 
     """A segment tree, aka a statistic tree, is a tree data structure used for 
