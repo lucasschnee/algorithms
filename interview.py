@@ -743,17 +743,14 @@ def get_divisors(n):
 
 
 # primes
-primes = [0] * n
-
-total = 0
-
-for i in range(2, n):
-    
-    if not primes[i]:
-	total += 1
-
-	for j in range(i, n, i):
-	    primes[j] = 1
+prime = [True] * N
+prime[0] = prime[1] = False
+for i in range(2, N):
+    if prime[i]:
+	x = i + i
+	while x < N:
+	    prime[x] = False
+	    x += i
 
 
 # Rotate 90 degrees
