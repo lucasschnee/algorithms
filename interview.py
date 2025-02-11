@@ -1251,3 +1251,13 @@ def has_cycle(adj):
         return False
 
     return any(dfs(u) for u in list(adj.keys()))
+
+
+# Adding number of ways to choose all possible paths from group of branches
+total = 0
+for A in branches.values():
+    s = 1
+    for x in A:
+	total += s * x
+	s += x
+return total
