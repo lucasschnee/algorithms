@@ -1261,3 +1261,21 @@ for A in branches.values():
 	total += s * x
 	s += x
 return total
+
+
+
+
+# string pattern thing -> Lex largest substring
+N = len(word)
+i = 0
+j = 1
+
+while j < N:
+    k = 0
+    while j + k < N and word[i + k] == word[j + k]:
+	k += 1
+    if j + k < N and word[i + k] < word[j + k]:
+	i, j = j, max(j + 1, i + k + 1)
+    else:
+	j = j + k + 1
+
