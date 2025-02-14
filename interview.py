@@ -1238,6 +1238,27 @@ total += t * key
 
 
 # has cycle
+
+# has cycle
+def has_cycle(adj, num_nodes):
+    indegree = [0] * num_nodes
+    for u in range(num_nodes):
+        for v in adj[u]:
+            indegree[v] += 1
+
+    q = deque(i for i in range(num_nodes) if indegree[i] == 0)
+    count = 0
+
+    while q:
+        u = q.popleft()
+        count += 1
+        for v in adj[u]:
+            indegree[v] -= 1
+            if indegree[v] == 0:
+                q.append(v)
+
+    return count != num_nodes
+	
 NEW, VISITING, DONE = range(3)
 def has_cycle(adj):
     color = defaultdict(int)
@@ -1251,6 +1272,10 @@ def has_cycle(adj):
         return False
 
     return any(dfs(u) for u in list(adj.keys()))
+
+
+
+
 
 
 # Adding number of ways to choose all possible paths from group of branches
