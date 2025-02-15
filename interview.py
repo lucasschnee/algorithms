@@ -444,6 +444,49 @@ def manacher(s: str) -> str:
     return s[(ii-xx)//2 : (ii+xx)//2]
 
 
+class CompressedSegmentTree:
+    def __init__(self, xs):
+        xs = list(sorted(set(xs)))
+        self.xs = xs
+        xl = {}
+        for i, x in enumerate(xs):
+            xl[x] = i
+
+        self.xl = xl
+        self.N = len(xl)
+        # how many segments cover this node
+        self.count = [0] * (4 * self.N + 1)
+        # how much of this node is covered
+        self.total = [0] * (4 * self.N + 1)
+
+    def _update_range(self, node, l, r, ql, qr, val):
+        if ql >= qr:
+            return
+        
+        if ql == self.xs[l] and qr == self.xs[r]:
+            self.count[node] += val
+        else:
+            mid = (l + r) // 2
+            if ql < self.xs[mid]:
+                self._update_range(2 * node, l, mid, ql, min(qr, self.xs[mid]), val)
+            if qr > self.xs[mid]:
+                self._update_range(2 * node + 1, mid, r, max(ql, self.xs[mid]), qr, val)
+
+        if self.count[node] > 0:
+            self.total[node] = self.xs[r] - self.xs[l]
+        else:
+            self.total[node] = self.total[node * 2] + self.total[node * 2 + 1] if node * 2 + 1 < len(self.total) else 0
+            
+    def update_range(self, ql, qr, val):
+        """ Adds 'val' to all indices in range [ql, qr]. """
+        self._update_range(1, 0, self.N - 1, ql, qr, val)
+
+    # get total number of marked nodes
+    def query(self):
+        return self.total[1]
+
+
+
 def z_function(s):
     z, l, r, n = [0] * len(s), 0, 0, len(s)
     for i in range(1, n):
