@@ -486,6 +486,59 @@ class CompressedSegmentTree:
         return self.total[1]
 
 
+# marks vals as 1 (up to 10 ** 9)
+class Node:
+    def __init__(self):
+        self.left = None
+        self.right = None
+        self.marked = 0  # Count of marked spots in this range
+        self.lazy = 0     # Lazy propagation flag
+
+class SegmentTree:
+    def __init__(self, L=0, R=10**9):
+        self.root = Node()
+        self.L = L
+        self.R = R
+
+    def _push(self, node, l, r):
+        """ Propagate the lazy update if needed. """
+        if node.lazy:
+            mid = (l + r) // 2
+            if not node.left:
+                node.left = Node()
+            if not node.right:
+                node.right = Node()
+            node.left.marked = mid - l + 1
+            node.right.marked = r - mid
+            node.left.lazy = 1
+            node.right.lazy = 1
+            node.lazy = 0  # Clear lazy flag
+
+    def _add(self, node, l, r, ql, qr):
+        """ Marks the range [ql, qr] as 1. """
+        if ql > r or qr < l:
+            return
+        if ql <= l and r <= qr:
+            node.marked = r - l + 1
+            node.lazy = 1
+            return
+        self._push(node, l, r)
+        mid = (l + r) // 2
+        if not node.left:
+            node.left = Node()
+        if not node.right:
+            node.right = Node()
+        self._add(node.left, l, mid, ql, qr)
+        self._add(node.right, mid + 1, r, ql, qr)
+        node.marked = (node.left.marked if node.left else 0) + (node.right.marked if node.right else 0)
+
+    def add(self, l, r):
+        self._add(self.root, self.L, self.R, l, r)
+
+    def query(self):
+        return self.root.marked if self.root else 0
+
+
 
 def z_function(s):
     z, l, r, n = [0] * len(s), 0, 0, len(s)
