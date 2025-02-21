@@ -1400,3 +1400,15 @@ while j < N:
     else:
 	j = j + k + 1
 
+# Hungarian Algorithm
+# n^3 time n^2 space
+# cost matrix
+# rows: strength[i], cols: X = j + 1, 1 <= X <= N
+mat =[[0] * N for i in range(N)]
+for i in range(N):
+    for j in range(N):
+	# for num := strength[i], and X = j + 1, calc time and strore in matrix
+	mat[i][j]= strength[i] // (j + 1) + int(strength[i] % (j + 1) > 0)
+
+# use hungarian algo to get best is and js pairs
+A, B = linear_sum_assignment(mat)
