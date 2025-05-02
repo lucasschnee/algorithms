@@ -1412,3 +1412,63 @@ for i in range(N):
 
 # use hungarian algo to get best is and js pairs
 A, B = linear_sum_assignment(mat)
+
+
+
+# cool binary lifting example
+ A = []
+for index, x in enumerate(nums):
+    A.append((x, index))
+A.sort()
+lookup = defaultdict(int)
+for index, (v, i) in enumerate(A):
+    lookup[i] = index
+
+mx = len(bin(n)[2:]) + 1
+
+binary_lift = [[-1] * mx for _ in range(n)]
+
+r = 0
+
+for l in range(n):
+    while r < n and A[r][0] - A[l][0] <= maxDiff:
+	r += 1
+    r -= 1
+    binary_lift[l][0] = r
+
+for b in range(1, mx):
+    for i in range(n):
+	binary_lift[i][b] = binary_lift[binary_lift[i][b-1]][b - 1]
+
+
+INF = 10 ** 20
+def find(u, v, b):
+    if u == v:
+	return 0
+
+    if binary_lift[u][b] < v:
+	return INF
+
+    if binary_lift[u][0] >= v:
+	return 1
+
+    
+    for bb in range(b, -1, -1):
+	if binary_lift[u][bb] < v:
+	    return (1 << bb) + find(binary_lift[u][bb], v, bb)
+
+
+
+ans = []
+
+
+for u, v in queries:
+    u, v = lookup[u], lookup[v]
+    u, v = min(u, v), max(u, v)
+    res = find(u, v, mx - 1)
+    if res < INF:
+	ans.append(res)
+    else:
+	ans.append(-1)
+
+return ans
