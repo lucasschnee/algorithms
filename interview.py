@@ -1464,7 +1464,6 @@ def find(u, v, b):
 
 ans = []
 
-
 for u, v in queries:
     u, v = lookup[u], lookup[v]
     u, v = min(u, v), max(u, v)
@@ -1475,3 +1474,44 @@ for u, v in queries:
 	ans.append(-1)
 
 return ans
+
+
+
+class BitTrieNode:
+    def __init__(self):
+        self.count = 0
+        self.child = [None] * 2
+ 
+class BitTrie:
+    def __init__(self):
+        self.root = BitTrieNode()
+
+    def increase(self, number, d):
+        cur = self.root 
+        for i in range(17, -1, -1):
+            bit = (number >> i) & 1
+
+            if not cur.child[bit]: 
+                cur.child[bit] = BitTrieNode()
+
+            cur = cur.child[bit]
+            cur.count += d
+
+    def findMax(self, number):
+
+        cur, ans = self.root, 0
+        for i in range(17, -1, -1):
+
+            bit = (number >> i) & 1
+
+            if cur.child[1 - bit] and cur.child[1-bit].count > 0:
+                cur = cur.child[1 - bit]
+                ans |= (1 << i)
+
+            elif cur.child[bit] and cur.child[bit].count > 0:
+                cur = cur.child[bit]
+
+            else:
+                return ans
+
+        return ans
