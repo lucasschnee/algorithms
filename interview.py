@@ -1,3 +1,6 @@
+fmin = lambda x, y: x if x < y else y
+fmax = lambda x, y: x if x > y else y
+
 directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
 for dx, dy in directions:
