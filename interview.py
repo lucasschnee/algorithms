@@ -4,7 +4,7 @@ fmax = lambda x, y: x if x > y else y
 directions = [(0, 1), (1, 0), (-1, 0), (0, -1)]
 
 for dx, dy in directions:
-    nx, ny = x + dx, y + dy
+    nx, ny = i + dx, j + dy
 
     if not (0 <= nx < M) or not (0 <= ny < N):
 	continue
