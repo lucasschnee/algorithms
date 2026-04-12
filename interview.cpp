@@ -86,6 +86,32 @@ public:
     }
 };
 
+set<int> primes;
+vector<int> primes_list;
+
+
+void buildPrimes() {
+    const int N = 200000;
+    vector<bool> isPrime(N + 1, true);
+    isPrime[0] = isPrime[1] = false;
+
+    for (int i = 2; i * i <= N; i++) {
+        if (isPrime[i]) {
+            for (int j = i * i; j <= N; j += i) {
+                isPrime[j] = false;
+            }
+        }
+    }
+
+    for (int i = 2; i <= N; i++) {
+        if (isPrime[i]) {
+            primes.insert(i);
+            primes_list.push_back(i);
+        }
+    }
+}
+
+
 
 
 
