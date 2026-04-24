@@ -13,6 +13,33 @@
 #include <deque>
 #include <iomanip>
 
+
+
+typedef long long ll;
+ll MOD=1000000007;
+ll power(ll base, ll exp) {
+	ll res = 1;
+	base %= MOD;
+	while (exp>0) {
+		if (exp%2==1) {
+			res *= base;
+			res %= MOD;
+		}
+
+		base = base * base;
+		base %= MOD;
+		exp = exp/2;
+	}
+	return res;
+}
+
+ll mod_inv(ll base) {
+	return power(base, MOD-2);
+}
+
+
+
+
 static const long long MOD = 1e9 + 7;
 
 long long modpow(long long a, long long b) {
