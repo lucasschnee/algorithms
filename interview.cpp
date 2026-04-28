@@ -230,3 +230,50 @@ vector<vector<long long>> power(vector<vector<long long>> M, long long p) {
 	return res;
 }
 
+
+
+
+class MaxSegmentTree {
+private:
+    int n;
+    vector<long long> tree;
+
+public:
+    MaxSegmentTree(int size) {
+        n = 1;
+        while (n < size) n <<= 1;
+        tree.assign(2 * n, 0LL); 
+    }
+
+    /**
+     * Updates value at index 'idx' with 'val'
+     */
+    void update(int idx, long long val) {
+        idx += n; 
+        if (tree[idx] >= val) return; 
+
+        tree[idx] = val;
+        for (idx >>= 1; idx >= 1; idx >>= 1) {
+            tree[idx] = max(tree[2 * idx], tree[2 * idx + 1]);
+        }
+    }
+
+    /**
+     * Queries the maximum value in the range [l, r] inclusive
+     */
+    long long query_max(int l, int r) {
+        if (l > r || l < 0) return 0LL;
+        
+        long long res = 0;
+        l += n;
+        r += n;
+
+        while (l <= r) {
+            if (l % 2 == 1) res = max(res, tree[l++]);
+            if (r % 2 == 0) res = max(res, tree[r--]);
+            l /= 2;
+            r /= 2;
+        }
+        return res;
+    }
+};
