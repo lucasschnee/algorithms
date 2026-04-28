@@ -198,3 +198,35 @@ struct ordered_multiset {
 	auto upper_bound(num_t k) { return vals.upper_bound(make_pair(k, 0)); }
 };
 
+
+
+
+
+// Matrix Multiply AB,  % MOD
+    vector<vector<long long>> multiply(const vector<vector<long long>>& A, const vector<vector<long long>>& B) {
+        int sz = A.size();
+        vector<vector<long long>> C(sz, vector<long long>(sz, 0));
+        for (int i = 0; i < sz; ++i) {
+            for (int k = 0; k < sz; ++k) { 
+                if (A[i][k] == 0) continue; 
+                for (int j = 0; j < sz; ++j) {
+                    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
+                }
+            }
+        }
+        return C;
+    }
+
+// Binary Exponentiation: M^p, log(sz))
+vector<vector<long long>> power(vector<vector<long long>> M, long long p) {
+	int sz = M.size();
+	vector<vector<long long>> res(sz, vector<long long>(sz, 0));
+	for (int i = 0; i < sz; ++i) res[i][i] = 1; // Identity matrix
+	while (p > 0) {
+		if (p & 1) res = multiply(res, M);
+		M = multiply(M, M);
+		p >>= 1;
+	}
+	return res;
+}
+
